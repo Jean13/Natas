@@ -3,6 +3,8 @@ OverTheWire War Game. Server-side hacking.
 
 For levels, visit: http://overthewire.org/wargames/natas/
 
+Attacks include: SQL injections, SQL time-based injections, command injections, command substitutions, session hijacking, directory travesal, brute forcing, and more.
+
 ##Repository includes:
 
 1) Write-ups
