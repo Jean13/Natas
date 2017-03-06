@@ -722,7 +722,7 @@ The last character is clearly hex.
 63 = c
 
 I use a script I wrote that converts between different formats.
-If you want to use it, you can find it here:
+If you want to use it, you can find it here: https://github.com/Jean13/convenience/blob/master/format_convert.py 
 Be sure to follow me on Github if you use it! 
 '''
 
