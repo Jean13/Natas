@@ -7,7 +7,8 @@ Attacks include: SQL injections, SQL time-based injections, command injections, 
 
 ##Repository includes:
 
-1) Write-ups
+1) [Write-ups](natas_writeups.txt)
+
 2) Working scripts
 
 ##Note: 
